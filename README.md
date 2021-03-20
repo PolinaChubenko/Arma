@@ -1,11 +1,8 @@
 # SFML - Arma
-## _by Polina Chubenko_
-____
 
 A strategy game - fight of units - made in C++ using sfml library. It seems to be ✨Magic ✨
 
 ## Requirements
-____
 
 #### Must have (dependencies)
 - SFML 2.4.1 or above - http://www.sfml-dev.org/
@@ -15,7 +12,6 @@ ____
 ```
 
 ## Building from source
-____
 
 - Download the source code.
 - Don't forget to install the sfml libraries.
@@ -27,3 +23,4 @@ g++ main.o -o sfml-app -L<sfml-install-path>/lib -lsfml-graphics -lsfml-window -
 export LD_LIBRARY_PATH=<sfml-install-path>/lib && ./sfml-app
 ```
 
+_created by Polina Chubenko_
