@@ -1,7 +1,6 @@
 #ifndef ARMA_UNIT_H
 #define ARMA_UNIT_H
 
-#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
@@ -178,6 +177,5 @@ std::pair<int, int> Bowman::getPosition() const {
 sf::CircleShape &Bowman::getTexture() {
     return texture_;
 }
-
 
 #endif //ARMA_UNIT_H

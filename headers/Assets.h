@@ -1,7 +1,6 @@
 #ifndef ARMA_ASSETS_H
 #define ARMA_ASSETS_H
 
-#pragma once
 #include <SFML/Graphics.hpp>
 
 class Assets {

@@ -1,7 +1,6 @@
 #ifndef ARMA_UNITFACTORY_H
 #define ARMA_UNITFACTORY_H
 
-#pragma once
 #include "Unit.h"
 
 class UnitFactory {
