@@ -5,9 +5,11 @@
 
 class Render : public sf::Drawable, public sf::Transformable {
 private:
-    sf::RenderWindow window_;
-    std::unique_ptr<Model> game_;
-    sf::Text text_, info_;
+    sf::RenderWindow window;
+    std::unique_ptr<Model> game;
+    sf::Text text, info;
+    sf::Vertex line1[2];
+    sf::Vertex line2[2];
 public:
     explicit Render(Model*);
     ~Render() override = default;
@@ -24,39 +26,54 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Render::Render(Model* game) : game_(game) {
+Render::Render(Model* game) : game(game) {
     initialize();
 }
 sf::RenderWindow& Render::getWindow() {
-    return window_;
+    return window;
 }
 bool Render::initialize() {
     setPosition(25.f, 25.f);
-    window_.setVerticalSyncEnabled(true);
-    window_.create(sf::VideoMode(1000, 700), "Arma!");
+    window.setVerticalSyncEnabled(true);
+    window.create(sf::VideoMode(1000, 700), "Arma!");
 
-    text_.setFont(Assets::getInstance().font);
-    text_.setString("Press A / S / D to choose the unit; then click on the board");
-    text_.setCharacterSize(24);
-    text_.setFillColor(sf::Color::Black);
-    text_.setPosition(5.f, 5.f);
+    text.setFont(Assets::getInstance().font);
+    text.setString("Press A / S / D to choose the unit; then click on the board");
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(5.f, 5.f);
 
-    info_.setFont(Assets::getInstance().font);
-    info_.setString("A - Spearman; S - Swordsman; D - Bowman");
-    info_.setCharacterSize(24);
-    info_.setFillColor(sf::Color::Black);
-    info_.setPosition(5.f, 30.f);
+    info.setFont(Assets::getInstance().font);
+    info.setString("A - Spearman; S - Swordsman; D - Bowman");
+    info.setCharacterSize(24);
+    info.setFillColor(sf::Color::Black);
+    info.setPosition(5.f, 30.f);
+
+    line1[0] = sf::Vertex(sf::Vector2f(400, 640));
+    line1[1] = sf::Vertex(sf::Vector2f(400, 85));
+    line2[0] = sf::Vertex(sf::Vector2f(20, 85));
+    line2[1] = sf::Vertex(sf::Vector2f(980, 85));
+
+    line1[0].color = sf::Color::Magenta;
+    line1[1].color = sf::Color::Magenta;
+    line2[0].color = sf::Color::Magenta;
+    line2[1].color = sf::Color::Magenta;
     return true;
 }
 void Render::render() {
-    window_.clear(sf::Color::White);
-    window_.draw(*this);
-    window_.draw(text_);
-    window_.draw(info_);
-    window_.display();
+    window.clear(sf::Color::White);
+    window.draw(*this);
+    window.draw(text);
+    window.draw(info);
+    window.draw(line1, 2, sf::Lines);
+    window.draw(line2, 2, sf::Lines);
+    window.display();
 }
 void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for(auto& el : game_->getUnits()) {
+    for(auto& el : game->getUnits()) {
+        target.draw((*el).getTexture());
+    }
+    for(auto& el : game->getEnemies()) {
         target.draw((*el).getTexture());
     }
 }

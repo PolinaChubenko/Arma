@@ -12,8 +12,8 @@ enum Units{
 
 class Controller {
 private:
-    std::unique_ptr<Render> render_;
-    std::unique_ptr<Model> game_;
+    std::unique_ptr<Render> render;
+    std::unique_ptr<Model> game;
 public:
     explicit Controller(Render*, Model*);
     ~Controller() = default;
@@ -26,41 +26,43 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Controller::Controller(Render *render, Model *game) : render_(render), game_(game){}
+Controller::Controller(Render *render, Model *game) : render(render), game(game){}
 void Controller::run() {
-    while (render_->getWindow().isOpen()) {
+    while (render->getWindow().isOpen()) {
         sf::Event event{};
         Units type;
-        while (render_->getWindow().pollEvent(event)) {
+        while (render->getWindow().pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-                render_->getWindow().close();
+                render->getWindow().close();
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     int x = event.mouseButton.x, y = event.mouseButton.y;
                     std::cout << "pos: " << x << " " << y << ". ";
-                    switch (type) {
-                        case SPEARMAN:
-                            game_->newSpearman(x, y);
-                            break;
-                        case SWORDSMAN:
-                            game_->newSwordsman(x, y);
-                            break;
-                        case BOWMAN:
-                            game_->newBowman(x, y);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (!game_->getUnits().empty()) {
-                        std::vector<std::unique_ptr<Unit>>::iterator it;
-                        it = (game_->getUnits().end() - 1);
-                        (*it)->getTexture().setFillColor(sf::Color::Blue);
-                        (*it)->getInfo();
-                        std::cout << "I have: " << (*it)->getHp() << "-hp; ";
-                        std::cout << (*it)->getDamage() << "-damage; ";
-                        std::cout << (*it)->getAttackDistance() << "-attack distance; ";
-                        std::cout << (*it)->getAttackFrequency() << "-attack frequency; ";
-                        std::cout << (*it)->getSpeed() << "-speed.\n\n";
+                    if (x <= 400 && y >= 85 && game->getUnits().size() < game->getEnemies().size()) {
+                        switch (type) {
+                            case SPEARMAN:
+                                game->newSpearman(x, y);
+                                break;
+                            case SWORDSMAN:
+                                game->newSwordsman(x, y);
+                                break;
+                            case BOWMAN:
+                                game->newBowman(x, y);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (!game->getUnits().empty()) {
+                            std::vector<std::unique_ptr<Unit>>::iterator it;
+                            it = (game->getUnits().end() - 1);
+//                            (*it)->getTexture().setFillColor(sf::Color::Blue);
+                            (*it)->getInfo();
+//                            std::cout << "I have: " << (*it)->getHp() << "-hp; ";
+//                            std::cout << (*it)->getDamage() << "-damage; ";
+//                            std::cout << (*it)->getAttackDistance() << "-attack distance; ";
+//                            std::cout << (*it)->getAttackFrequency() << "-attack frequency; ";
+//                            std::cout << (*it)->getSpeed() << "-speed.\n\n";
+                        }
                     }
                 }
             }
@@ -79,7 +81,7 @@ void Controller::run() {
                 }
             }
         }
-        render_->render();
+        render->render();
     }
 }
 
