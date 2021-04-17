@@ -6,8 +6,8 @@
 
 class Unit {
 public:
+    void getAllInfo() const;
     virtual void getType() const = 0;
-    virtual void getAllInfo() const = 0;
     [[nodiscard]] virtual int getHp() const = 0;
     [[nodiscard]] virtual int getDamage() const = 0;
     [[nodiscard]] virtual int getAttackDistance() const = 0;
@@ -18,7 +18,6 @@ public:
     virtual void setColor(sf::Color) = 0;
     virtual ~Unit() = 0;
 };
-Unit::~Unit() = default;
 
 
 class Spearman : public Unit {
@@ -33,7 +32,6 @@ protected:
 public:
     Spearman(int, int);
     void getType() const override;
-    void getAllInfo() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
@@ -57,7 +55,6 @@ protected:
 public:
     Swordsman(int, int);
     void getType() const override;
-    void getAllInfo() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
@@ -75,13 +72,12 @@ protected:
     int damage = 35;
     int attackDistance = 150;
     float attackFrequency = 3.5;
-    float speed_ = 0.5;
+    float speed = 0.5;
     std::pair<int, int> position;
     sf::CircleShape texture = sf::CircleShape(25.f, 4);
 public:
     Bowman(int, int);
     void getType() const override;
-    void getAllInfo() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
@@ -98,18 +94,21 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Spearman::Spearman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
-    texture.setPosition(float(x - 25), float(y - 25));
-}
-void Spearman::getType() const {
-    std::cout << "I am Spearman\n";
-}
-void Spearman::getAllInfo() const {
+Unit::~Unit() = default;
+void Unit::getAllInfo() const {
     std::cout << "I have: " << getHp() << "-hp; ";
     std::cout << getDamage() << "-damage; ";
     std::cout << getAttackDistance() << "-attack distance; ";
     std::cout << getAttackFrequency() << "-attack frequency; ";
     std::cout << getSpeed() << "-speed.\n\n";
+}
+
+
+Spearman::Spearman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
+    texture.setPosition(float(x - 25), float(y - 25));
+}
+void Spearman::getType() const {
+    std::cout << "I am Spearman\n";
 }
 int Spearman::getHp() const {
     return hp;
@@ -142,13 +141,6 @@ Swordsman::Swordsman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
 }
 void Swordsman::getType() const {
     std::cout << "I am Swordsman\n";
-}
-void Swordsman::getAllInfo() const {
-    std::cout << "I have: " << getHp() << "-hp; ";
-    std::cout << getDamage() << "-damage; ";
-    std::cout << getAttackDistance() << "-attack distance; ";
-    std::cout << getAttackFrequency() << "-attack frequency; ";
-    std::cout << getSpeed() << "-speed.\n\n";
 }
 int Swordsman::getHp() const {
     return hp;
@@ -183,13 +175,6 @@ Bowman::Bowman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
 void Bowman::getType() const {
     std::cout << "I am Bowman\n";
 }
-void Bowman::getAllInfo() const {
-    std::cout << "I have: " << getHp() << "-hp; ";
-    std::cout << getDamage() << "-damage; ";
-    std::cout << getAttackDistance() << "-attack distance; ";
-    std::cout << getAttackFrequency() << "-attack frequency; ";
-    std::cout << getSpeed() << "-speed.\n\n";
-}
 int Bowman::getHp() const {
     return hp;
 }
@@ -203,7 +188,7 @@ float Bowman::getAttackFrequency() const {
     return attackFrequency;
 }
 float Bowman::getSpeed() const {
-    return speed_;
+    return speed;
 }
 std::pair<int, int> Bowman::getPosition() const {
     return position;
