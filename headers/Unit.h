@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "GameMaths.h"
 
 class Unit {
+protected:
+    float size = 25;
 public:
     void getAllInfo() const;
     virtual void getType() const = 0;
@@ -13,9 +16,10 @@ public:
     [[nodiscard]] virtual int getAttackDistance() const = 0;
     [[nodiscard]] virtual float getAttackFrequency() const = 0;
     [[nodiscard]] virtual float getSpeed() const = 0;
-    [[nodiscard]] virtual std::pair<int, int> getPosition() const = 0;
+    [[nodiscard]] virtual std::pair<float, float> getPosition() const = 0;
     virtual sf::CircleShape& getTexture() = 0;
     virtual void setColor(sf::Color) = 0;
+    virtual void move(std::pair<float, float>, float) = 0;
     virtual ~Unit() = 0;
 };
 
@@ -26,20 +30,21 @@ protected:
     int damage = 35;
     int attackDistance = 28;
     float attackFrequency = 0.9;
-    float speed = 0.6;
-    std::pair<int, int> position;
-    sf::CircleShape texture = sf::CircleShape(25.f, 5);
+    float speed = 15.6;
+    std::pair<float, float> position;
+    sf::CircleShape texture = sf::CircleShape(size, 5);
 public:
-    Spearman(int, int);
+    Spearman(float, float);
     void getType() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
     [[nodiscard]] float getAttackFrequency() const override;
     [[nodiscard]] float getSpeed() const override;
-    [[nodiscard]] std::pair<int, int> getPosition() const override;
+    [[nodiscard]] std::pair<float, float> getPosition() const override;
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
+    void move(std::pair<float, float>, float) override;
 };
 
 
@@ -49,20 +54,21 @@ protected:
     int damage = 110;
     int attackDistance = 8;
     float attackFrequency = 1.0;
-    float speed = 0.4;
-    std::pair<int, int> position;
-    sf::CircleShape texture = sf::CircleShape(25.f);
+    float speed = 8.4;
+    std::pair<float, float> position;
+    sf::CircleShape texture = sf::CircleShape(size);
 public:
-    Swordsman(int, int);
+    Swordsman(float, float);
     void getType() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
     [[nodiscard]] float getAttackFrequency() const override;
     [[nodiscard]] float getSpeed() const override;
-    [[nodiscard]] std::pair<int, int> getPosition() const override;
+    [[nodiscard]] std::pair<float, float> getPosition() const override;
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
+    void move(std::pair<float, float>, float) override;
 };
 
 
@@ -72,20 +78,21 @@ protected:
     int damage = 35;
     int attackDistance = 150;
     float attackFrequency = 3.5;
-    float speed = 0.5;
-    std::pair<int, int> position;
-    sf::CircleShape texture = sf::CircleShape(25.f, 4);
+    float speed = 12.5;
+    std::pair<float, float> position;
+    sf::CircleShape texture = sf::CircleShape(size, 4);
 public:
-    Bowman(int, int);
+    Bowman(float, float);
     void getType() const override;
     [[nodiscard]] int getHp() const override;
     [[nodiscard]] int getDamage() const override;
     [[nodiscard]] int getAttackDistance() const override;
     [[nodiscard]] float getAttackFrequency() const override;
     [[nodiscard]] float getSpeed() const override;
-    [[nodiscard]] std::pair<int, int> getPosition() const override;
+    [[nodiscard]] std::pair<float, float> getPosition() const override;
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
+    void move(std::pair<float, float>, float) override;
 };
 
 
@@ -104,8 +111,8 @@ void Unit::getAllInfo() const {
 }
 
 
-Spearman::Spearman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
-    texture.setPosition(float(x - 25), float(y - 25));
+Spearman::Spearman(float x, float y) : position({x - size, y - size}) {
+    texture.setPosition(position.first, position.second);
 }
 void Spearman::getType() const {
     std::cout << "I am Spearman\n";
@@ -125,7 +132,7 @@ float Spearman::getAttackFrequency() const {
 float Spearman::getSpeed() const {
     return speed;
 }
-std::pair<int, int> Spearman::getPosition() const {
+std::pair<float, float> Spearman::getPosition() const {
     return position;
 }
 sf::CircleShape &Spearman::getTexture() {
@@ -134,10 +141,16 @@ sf::CircleShape &Spearman::getTexture() {
 void Spearman::setColor(sf::Color color) {
     texture.setFillColor(color);
 }
+void Spearman::move(std::pair<float, float> move_to, float delta_time) {
+    normalise(move_to);
+    position.first += move_to.first * delta_time * speed;
+    position.second += move_to.second * delta_time * speed;
+    texture.setPosition(position.first, position.second);
+}
 
 
-Swordsman::Swordsman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
-    texture.setPosition(float(x - 25), float(y - 25));
+Swordsman::Swordsman(float x, float y) : position({x - size, y - size}) {
+    texture.setPosition(position.first, position.second);
 }
 void Swordsman::getType() const {
     std::cout << "I am Swordsman\n";
@@ -157,7 +170,7 @@ float Swordsman::getAttackFrequency() const {
 float Swordsman::getSpeed() const {
     return speed;
 }
-std::pair<int, int> Swordsman::getPosition() const {
+std::pair<float, float> Swordsman::getPosition() const {
     return position;
 }
 sf::CircleShape &Swordsman::getTexture() {
@@ -166,11 +179,17 @@ sf::CircleShape &Swordsman::getTexture() {
 void Swordsman::setColor(sf::Color color) {
     texture.setFillColor(color);
 }
+void Swordsman::move(std::pair<float, float> move_to, float delta_time) {
+    normalise(move_to);
+    position.first += move_to.first * delta_time * speed;
+    position.second += move_to.second * delta_time * speed;
+    texture.setPosition(position.first, position.second);
+}
 
 
 
-Bowman::Bowman(int x, int y) : position(std::make_pair(x - 25, y - 25)) {
-    texture.setPosition(float(x - 25), float(y - 25));
+Bowman::Bowman(float x, float y) : position({x - size, y - size}) {
+    texture.setPosition(position.first, position.second);
 }
 void Bowman::getType() const {
     std::cout << "I am Bowman\n";
@@ -190,7 +209,7 @@ float Bowman::getAttackFrequency() const {
 float Bowman::getSpeed() const {
     return speed;
 }
-std::pair<int, int> Bowman::getPosition() const {
+std::pair<float, float> Bowman::getPosition() const {
     return position;
 }
 sf::CircleShape &Bowman::getTexture() {
@@ -198,6 +217,12 @@ sf::CircleShape &Bowman::getTexture() {
 }
 void Bowman::setColor(sf::Color color) {
     texture.setFillColor(color);
+}
+void Bowman::move(std::pair<float, float> move_to, float delta_time) {
+    normalise(move_to);
+    position.first += move_to.first * delta_time * speed;
+    position.second += move_to.second * delta_time * speed;
+    texture.setPosition(position.first, position.second);
 }
 
 #endif //ARMA_UNIT_H

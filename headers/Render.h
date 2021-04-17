@@ -38,9 +38,9 @@ sf::RenderWindow& Render::getWindow() {
     return window;
 }
 bool Render::initialize() {
-    setPosition(25.f, 25.f);
-    window.setVerticalSyncEnabled(true);
+    window.setPosition(sf::Vector2i(10, 50));
     window.create(sf::VideoMode(1000, 700), "Arma!");
+    window.setFramerateLimit(60);
 
     createInfo();
     createLines();
@@ -52,7 +52,9 @@ void Render::render() {
     window.draw(*this);
     window.draw(info);
     window.draw(places);
-    window.draw(line1, 2, sf::Lines);
+    if (!game->get_is_war()) {
+        window.draw(line1, 2, sf::Lines);
+    }
     window.draw(line2, 2, sf::Lines);
     window.display();
 }
@@ -64,7 +66,7 @@ void Render::updatePlaces() {
 void Render::createInfo() {
     info.setFont(Assets::getInstance().font);
     info.setString("Press A / S / D to choose the unit; then click on the board\n"
-                   "A - Spearman; S - Swordsman; D - Bowman");
+                   "A-Spearman; S-Swordsman; D-Bowman; press enter to start war!");
     info.setCharacterSize(24);
     info.setFillColor(sf::Color::Black);
     info.setPosition(5.f, 5.f);

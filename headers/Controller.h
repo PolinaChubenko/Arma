@@ -15,11 +15,12 @@ private:
     std::unique_ptr<Render> render;
     std::unique_ptr<Model> game;
     Units type = SPEARMAN;
+    sf::Clock clock;
 public:
     explicit Controller(Render*, Model*);
     ~Controller() = default;
     void run();
-    void addUnit(int, int);
+    void addUnit(float, float);
 };
 
 
@@ -32,12 +33,17 @@ Controller::Controller(Render *render, Model *game) : render(render), game(game)
 void Controller::run() {
     while (render->getWindow().isOpen()) {
         sf::Event event{};
+        float delta_time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
+        clock.restart();
+        delta_time = delta_time / 800;
+
         while (render->getWindow().pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 render->getWindow().close();
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    int x = event.mouseButton.x, y = event.mouseButton.y;
+                    auto x = static_cast<float>(event.mouseButton.x);
+                    auto y = static_cast<float>(event.mouseButton.y);
                     std::cout << "pos: " << x << " " << y << ". ";
                     addUnit(x, y);
                 }
@@ -55,12 +61,26 @@ void Controller::run() {
                     std::cout << "the BOWMAN's key was pressed\n\n";
                     type = BOWMAN;
                 }
+
+                if (event.key.code == sf::Keyboard::Enter) {
+                    if (game->getUnits().size() == game->getEnemies().size()) {
+                        game->set_is_war(true);
+                    }
+                }
+            }
+        }
+        if (game->get_is_war()) {
+            for(auto& it : game->getUnits()) {
+                (*it).move({15, 8}, delta_time);
+            }
+            for(auto& it : game->getEnemies()) {
+                (*it).move({-15, 8}, delta_time);
             }
         }
         render->render();
     }
 }
-void Controller::addUnit(int x, int y) {
+void Controller::addUnit(float x, float y) {
     if (x <= 400 && y >= 85 && game->getUnits().size() < game->getEnemies().size()) {
         switch (type) {
             case SPEARMAN:

@@ -5,7 +5,7 @@
 
 class UnitFactory {
 public:
-    virtual std::unique_ptr<Unit> createUnit(int, int) = 0;
+    virtual std::unique_ptr<Unit> createUnit(float, float) = 0;
     virtual ~UnitFactory() = 0;
 };
 UnitFactory::~UnitFactory() = default;
@@ -13,19 +13,19 @@ UnitFactory::~UnitFactory() = default;
 
 class SpearmenFactory : public UnitFactory {
 public:
-    std::unique_ptr<Unit> createUnit(int, int) override;
+    std::unique_ptr<Unit> createUnit(float, float) override;
 };
 
 
 class SwordsmenFactory : public UnitFactory {
 public:
-    std::unique_ptr<Unit> createUnit(int, int) override;
+    std::unique_ptr<Unit> createUnit(float, float) override;
 };
 
 
 class BowmenFactory : public UnitFactory {
 public:
-    std::unique_ptr<Unit> createUnit(int, int) override;
+    std::unique_ptr<Unit> createUnit(float, float) override;
 };
 
 
@@ -34,17 +34,17 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-std::unique_ptr<Unit> SpearmenFactory::createUnit(int x, int y) {
+std::unique_ptr<Unit> SpearmenFactory::createUnit(float x, float y) {
     return std::make_unique<Spearman>(x, y);
 }
 
 
-std::unique_ptr<Unit> SwordsmenFactory::createUnit(int x, int y) {
+std::unique_ptr<Unit> SwordsmenFactory::createUnit(float x, float y) {
     return std::make_unique<Swordsman>(x, y);
 }
 
 
-std::unique_ptr<Unit> BowmenFactory::createUnit(int x, int y) {
+std::unique_ptr<Unit> BowmenFactory::createUnit(float x, float y) {
     return std::make_unique<Bowman>(x, y);
 }
 
