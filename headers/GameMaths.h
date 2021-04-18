@@ -11,9 +11,9 @@ void normalise(std::pair<float, float>& vector) {
     vector = {norm_x, norm_y};
 }
 
-//float distance(sf::Vector2f from, sf::Vector2f to) {
-//    sf::Vector2f XY = from - to;
-//    return static_cast<float>(hypot(XY.x, XY.y));
-//}
+float distance(std::pair<float, float> from, std::pair<float, float> to) {
+    std::pair<float, float> vector = {to.first - from.first, to.second - from.second};
+    return static_cast<float>(std::hypot(vector.first, vector.second));
+}
 
 #endif //ARMA_GAMEMATHS_H

@@ -71,10 +71,19 @@ void Controller::run() {
         }
         if (game->get_is_war()) {
             for(auto& it : game->getUnits()) {
-                (*it).move({15, 8}, delta_time);
-            }
-            for(auto& it : game->getEnemies()) {
-                (*it).move({-15, 8}, delta_time);
+                std::pair<float, float> vector;
+                float dis = 100000;
+                for(auto& en : game->getEnemies()) {
+                    float delta1 = en->getPosition().first - it->getPosition().first;
+                    float delta2 = en->getPosition().second - it->getPosition().second;
+                    float new_dis = distance(en->getPosition(), it->getPosition());
+                    if (new_dis <= dis) {
+                        vector = {delta1, delta2};
+                        dis = new_dis;
+                    }
+                }
+                if (dis > it->getAttackDistance())
+                    it->move(vector, delta_time);
             }
         }
         render->render();
