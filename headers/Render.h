@@ -51,6 +51,7 @@ void Render::render() {
     window.clear(sf::Color::White);
     window.draw(*this);
     window.draw(info);
+    updatePlaces();
     window.draw(places);
     if (!game->get_is_war()) {
         window.draw(line1, 2, sf::Lines);
@@ -59,7 +60,7 @@ void Render::render() {
     window.display();
 }
 void Render::updatePlaces() {
-    std::string p = std::to_string(game->enemiesAmount() - game->unitsAmount());
+    std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
     p += " places";
     places.setString(p);
 }
@@ -90,12 +91,10 @@ void Render::createPlaces() {
     updatePlaces();
 }
 void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for(auto& el : game->getUnits()) {
+    for (auto& el : game->getPlayerUnits())
         target.draw((*el).getTexture());
-    }
-    for(auto& el : game->getEnemies()) {
+    for (auto& el : game->getEnemyUnits())
         target.draw((*el).getTexture());
-    }
 }
 
 #endif //ARMA_RENDER_H

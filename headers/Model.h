@@ -1,32 +1,29 @@
 #ifndef ARMA_MODEL_H
 #define ARMA_MODEL_H
 
-#include "UnitFactory.h"
-#include <vector>
+#include "Composite.h"
+
+enum UnitsType{
+    SPEARMAN,
+    SWORDSMAN,
+    BOWMAN
+};
 
 class Model {
 protected:
-    std::unique_ptr<SpearmenFactory> spearmenFactory = std::make_unique<SpearmenFactory>();
-    std::unique_ptr<SwordsmenFactory> swordsmenFactory = std::make_unique<SwordsmenFactory>();
-    std::unique_ptr<BowmenFactory> bowmenFactory = std::make_unique<BowmenFactory>();
-    std::vector<std::unique_ptr<Unit>> units;
-    std::vector<std::unique_ptr<Unit>> enemies;
-
-    sf::Color blue = sf::Color::Blue;
-    sf::Color red = sf::Color::Red;
+    ComposeUnits player;
+    ComposeUnits enemy;
     bool is_war_started = false;
 public:
     Model();
-    std::vector<std::unique_ptr<Unit>>& getUnits();
-    std::vector<std::unique_ptr<Unit>>& getEnemies();
-    size_t unitsAmount();
-    size_t enemiesAmount();
-    void newSpearman(float, float);
-    void newSwordsman(float, float);
-    void newBowman(float, float);
-    void createEnemiesArmy();
+    std::vector<std::unique_ptr<Unit>>& getPlayerUnits();
+    std::vector<std::unique_ptr<Unit>>& getEnemyUnits();
+    size_t playerUnitsAmount();
+    size_t enemyUnitsAmount();
+    void addUnit(UnitsType, float, float);
+    void initEnemy();
 
-    bool get_is_war();
+    [[nodiscard]] bool get_is_war() const;
     void set_is_war(bool);
 };
 
@@ -36,49 +33,50 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Model::Model() {
-    createEnemiesArmy();
+Model::Model() : player(sf::Color::Blue), enemy(sf::Color::Red) {
+    initEnemy();
 }
-std::vector<std::unique_ptr<Unit>>& Model::getUnits() {
-    return units;
+std::vector<std::unique_ptr<Unit>>& Model::getPlayerUnits() {
+    return player.getUnits();
 }
-std::vector<std::unique_ptr<Unit>>& Model::getEnemies() {
-    return enemies;
+std::vector<std::unique_ptr<Unit>>& Model::getEnemyUnits() {
+    return enemy.getUnits();
 }
-size_t Model::unitsAmount() {
-    return units.size();
+size_t Model::playerUnitsAmount() {
+    return player.size();
 }
-size_t Model::enemiesAmount() {
-    return enemies.size();
+size_t Model::enemyUnitsAmount() {
+    return enemy.size();
 }
-void Model::newSpearman(float x, float y) {
-    units.emplace_back(spearmenFactory->createUnit(x, y));
-    units[units.size() - 1]->setColor(blue);
-}
-void Model::newSwordsman(float x, float y) {
-    units.emplace_back(swordsmenFactory->createUnit(x, y));
-    units[units.size() - 1]->setColor(blue);
-}
-void Model::newBowman(float x, float y) {
-    units.emplace_back(bowmenFactory->createUnit(x, y));
-    units[units.size() - 1]->setColor(blue);
-}
-void Model::createEnemiesArmy() {
-    enemies.emplace_back(spearmenFactory->createUnit(700, 230));
-    enemies.emplace_back(spearmenFactory->createUnit(700, 330));
-    enemies.emplace_back(spearmenFactory->createUnit(700, 430));
-    enemies.emplace_back(spearmenFactory->createUnit(700, 530));
-
-    enemies.emplace_back(bowmenFactory->createUnit(800, 230));
-    enemies.emplace_back(bowmenFactory->createUnit(800, 330));
-    enemies.emplace_back(bowmenFactory->createUnit(800, 430));
-    enemies.emplace_back(bowmenFactory->createUnit(800, 530));
-
-    for (auto& el : enemies) {
-        (*el).setColor(red);
+void Model::addUnit(UnitsType type, float x, float y) {
+    if (x <= 400 && y >= 85 && player.size() < enemy.size()) {
+        switch (type) {
+            case SPEARMAN:
+                player.newSpearman(x, y);
+                break;
+            case SWORDSMAN:
+                player.newSwordsman(x, y);
+                break;
+            case BOWMAN:
+                player.newBowman(x, y);
+                break;
+            default:
+                break;
+        }
     }
 }
-bool Model::get_is_war() {
+void Model::initEnemy() {
+    enemy.newSpearman(700, 230);
+    enemy.newSpearman(700, 330);
+    enemy.newSpearman(700, 430);
+    enemy.newSpearman(700, 530);
+
+    enemy.newBowman(800, 230);
+    enemy.newBowman(800, 330);
+    enemy.newBowman(800, 430);
+    enemy.newBowman(800, 530);
+}
+bool Model::get_is_war() const {
     return is_war_started;
 }
 void Model::set_is_war(bool is_war) {
