@@ -13,6 +13,7 @@ protected:
     float attackDistance;
     float attackFrequency;
     float speed;
+    sf::Text hp_text;
 public:
     explicit Unit(int, int, float, float, float);
     void getAllInfo() const;
@@ -21,6 +22,7 @@ public:
     [[nodiscard]] float getAttackDistance() const;
     [[nodiscard]] float getAttackFrequency() const;
     [[nodiscard]] float getSpeed() const;
+    sf::Text& getHpText();
 
     virtual void getType() const = 0;
     [[nodiscard]] virtual std::pair<float, float> getPosition() const = 0;
@@ -102,6 +104,11 @@ float Unit::getAttackFrequency() const {
 }
 float Unit::getSpeed() const {
     return speed;
+}
+sf::Text &Unit::getHpText() {
+    hp_text = sf::Text(std::to_string(getHp()), Assets::getInstance().font, 16);
+    hp_text.setPosition(getPosition().first + 12, getPosition().second + 10);
+    return hp_text;
 }
 
 

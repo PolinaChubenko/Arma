@@ -2,6 +2,7 @@
 #define ARMA_RENDER_H
 
 #include "Assets.h"
+#include <iostream>
 
 class Render : public sf::Drawable, public sf::Transformable {
 private:
@@ -91,10 +92,15 @@ void Render::createPlaces() {
     updatePlaces();
 }
 void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for (auto& el : game->getPlayerUnits())
+    for (auto& el : game->getPlayerUnits()) {
         target.draw((*el).getTexture());
-    for (auto& el : game->getEnemyUnits())
+        target.draw((*el).getHpText());
+    }
+
+    for (auto& el : game->getEnemyUnits()) {
         target.draw((*el).getTexture());
+        target.draw((*el).getHpText());
+    }
 }
 
 #endif //ARMA_RENDER_H
