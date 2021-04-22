@@ -20,6 +20,7 @@ public:
     std::vector<std::shared_ptr<Unit>>& getUnits();
     size_t size();
     void attack(ComposeUnits&, float);
+    std::shared_ptr<Unit> getTarget(std::shared_ptr<Unit>&, std::vector<std::shared_ptr<Unit>>&);
 };
 
 
@@ -48,22 +49,28 @@ std::vector<std::shared_ptr<Unit>> &ComposeUnits::getUnits() {
 size_t ComposeUnits::size() {
     return units.size();
 }
+std::shared_ptr<Unit> ComposeUnits::getTarget(std::shared_ptr<Unit>& unit, std::vector<std::shared_ptr<Unit>> &enemies) {
+    float min_dis = 1e5;
+    std::shared_ptr<Unit> victim(enemies[0]);
+    for (auto& en : enemies) {
+        float new_dis = distance(en->getPosition(), unit->getPosition());
+        if (new_dis <= min_dis) {
+            min_dis = new_dis;
+            victim = en;
+        }
+    }
+    return victim;
+}
 void ComposeUnits::attack(ComposeUnits &whom_to_attack, float delta_time) {
     for (auto& it : units) {
-        std::pair<float, float> vector;
-        float dis = 1e5;
-        std::shared_ptr<Unit> victim(whom_to_attack.getUnits()[0]);
-        for (auto& en : whom_to_attack.getUnits()) {
-            float new_dis = distance(en->getPosition(), it->getPosition());
-            if (new_dis <= dis) {
-                vector = {en->getPosition().first - it->getPosition().first,
-                          en->getPosition().second - it->getPosition().second};
-                dis = new_dis;
-                victim = en;
-            }
-        }
+        std::shared_ptr<Unit> victim = getTarget(it, whom_to_attack.getUnits());
+        std::pair<float, float> vector = victim->getPosition() - it->getPosition();
+        float dis = distance(victim->getPosition(), it->getPosition());
         if (dis > it->getAttackDistance())
             it->move(vector, delta_time);
+        else {
+            it->hit(victim);
+        }
     }
 }
 

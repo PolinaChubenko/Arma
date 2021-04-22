@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include "GameMaths.h"
 
 class Unit {
@@ -23,6 +24,7 @@ public:
     [[nodiscard]] float getAttackFrequency() const;
     [[nodiscard]] float getSpeed() const;
     sf::Text& getHpText();
+    int& changeHp();
 
     virtual void getType() const = 0;
     [[nodiscard]] virtual std::pair<float, float> getPosition() const = 0;
@@ -30,6 +32,7 @@ public:
     virtual void setColor(sf::Color) = 0;
 
     virtual void move(std::pair<float, float>, float) = 0;
+    virtual void hit(std::shared_ptr<Unit>&) = 0;
     virtual ~Unit() = 0;
 };
 
@@ -45,6 +48,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
+    void hit(std::shared_ptr<Unit>&) override;
 };
 
 
@@ -59,6 +63,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
+    void hit(std::shared_ptr<Unit>&) override;
 };
 
 
@@ -73,6 +78,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
+    void hit(std::shared_ptr<Unit>&) override;
 };
 
 
@@ -110,6 +116,9 @@ sf::Text &Unit::getHpText() {
     hp_text.setPosition(getPosition().first + 12, getPosition().second + 10);
     return hp_text;
 }
+int &Unit::changeHp() {
+    return hp;
+}
 
 
 Spearman::Spearman(float x, float y) : Unit(50, 35, 38 + size, 0.9, 15.6) {
@@ -135,6 +144,9 @@ void Spearman::move(std::pair<float, float> move_to, float delta_time) {
     position.first += move_to.first * delta_time * speed;
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
+}
+void Spearman::hit(std::shared_ptr<Unit> &victim) {
+    victim->changeHp() -= getDamage();
 }
 
 
@@ -162,6 +174,9 @@ void Swordsman::move(std::pair<float, float> move_to, float delta_time) {
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
 }
+void Swordsman::hit(std::shared_ptr<Unit> &victim) {
+    victim->changeHp() -= getDamage();
+}
 
 
 
@@ -188,6 +203,9 @@ void Bowman::move(std::pair<float, float> move_to, float delta_time) {
     position.first += move_to.first * delta_time * speed;
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
+}
+void Bowman::hit(std::shared_ptr<Unit> &victim) {
+    victim->changeHp() -= getDamage();
 }
 
 #endif //ARMA_UNIT_H

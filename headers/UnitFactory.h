@@ -2,7 +2,6 @@
 #define ARMA_UNITFACTORY_H
 
 #include "Unit.h"
-#include <memory>
 
 class UnitFactory {
 public:

@@ -10,9 +10,14 @@ void normalise(std::pair<float, float>& vector) {
     float norm_y = y / d;
     vector = {norm_x, norm_y};
 }
-
+std::pair<float, float> operator-(std::pair<float, float> p1, std::pair<float, float> p2) {
+    return {p1.first - p2.first, p1.second - p2.second};
+}
+std::pair<float, float> operator+(std::pair<float, float> p1, std::pair<float, float> p2) {
+    return {p1.first + p2.first, p1.second + p2.second};
+}
 float distance(std::pair<float, float> from, std::pair<float, float> to) {
-    std::pair<float, float> vector = {to.first - from.first, to.second - from.second};
+    std::pair<float, float> vector = to - from;
     return static_cast<float>(std::hypot(vector.first, vector.second));
 }
 
