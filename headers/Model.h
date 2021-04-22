@@ -16,8 +16,8 @@ protected:
     bool is_war_started = false;
 public:
     Model();
-    std::vector<std::unique_ptr<Unit>>& getPlayerUnits();
-    std::vector<std::unique_ptr<Unit>>& getEnemyUnits();
+    std::vector<std::shared_ptr<Unit>>& getPlayerUnits();
+    std::vector<std::shared_ptr<Unit>>& getEnemyUnits();
     size_t playerUnitsAmount();
     size_t enemyUnitsAmount();
     void addUnit(UnitsType, float, float);
@@ -25,6 +25,7 @@ public:
 
     [[nodiscard]] bool get_is_war() const;
     void set_is_war(bool);
+    void attack(float);
 };
 
 
@@ -36,10 +37,10 @@ public:
 Model::Model() : player(sf::Color::Blue), enemy(sf::Color::Red) {
     initEnemy();
 }
-std::vector<std::unique_ptr<Unit>>& Model::getPlayerUnits() {
+std::vector<std::shared_ptr<Unit>>& Model::getPlayerUnits() {
     return player.getUnits();
 }
-std::vector<std::unique_ptr<Unit>>& Model::getEnemyUnits() {
+std::vector<std::shared_ptr<Unit>>& Model::getEnemyUnits() {
     return enemy.getUnits();
 }
 size_t Model::playerUnitsAmount() {
@@ -81,6 +82,12 @@ bool Model::get_is_war() const {
 }
 void Model::set_is_war(bool is_war) {
     is_war_started = is_war;
+}
+void Model::attack(float delta_time) {
+    if (is_war_started) {
+        player.attack(enemy, delta_time);
+        enemy.attack(player, delta_time);
+    }
 }
 
 

@@ -9,7 +9,7 @@ protected:
     std::unique_ptr<SpearmenFactory> spearmenFactory = std::make_unique<SpearmenFactory>();
     std::unique_ptr<SwordsmenFactory> swordsmenFactory = std::make_unique<SwordsmenFactory>();
     std::unique_ptr<BowmenFactory> bowmenFactory = std::make_unique<BowmenFactory>();
-    std::vector<std::unique_ptr<Unit>> units;
+    std::vector<std::shared_ptr<Unit>> units;
     sf::Color color;
 public:
     ComposeUnits() = default;
@@ -17,8 +17,9 @@ public:
     void newSpearman(float, float);
     void newSwordsman(float, float);
     void newBowman(float, float);
-    std::vector<std::unique_ptr<Unit>>& getUnits();
+    std::vector<std::shared_ptr<Unit>>& getUnits();
     size_t size();
+    void attack(ComposeUnits&, float);
 };
 
 
@@ -41,11 +42,29 @@ void ComposeUnits::newBowman(float x, float y) {
     units.emplace_back(bowmenFactory->createUnit(x, y));
     units[units.size() - 1]->setColor(color);
 }
-std::vector<std::unique_ptr<Unit>> &ComposeUnits::getUnits() {
+std::vector<std::shared_ptr<Unit>> &ComposeUnits::getUnits() {
     return units;
 }
 size_t ComposeUnits::size() {
     return units.size();
+}
+void ComposeUnits::attack(ComposeUnits &whom_to_attack, float delta_time) {
+    for (auto& it : units) {
+        std::pair<float, float> vector;
+        float dis = 1e5;
+        std::shared_ptr<Unit> victim(whom_to_attack.getUnits()[0]);
+        for (auto& en : whom_to_attack.getUnits()) {
+            float new_dis = distance(en->getPosition(), it->getPosition());
+            if (new_dis <= dis) {
+                vector = {en->getPosition().first - it->getPosition().first,
+                          en->getPosition().second - it->getPosition().second};
+                dis = new_dis;
+                victim = en;
+            }
+        }
+        if (dis > it->getAttackDistance())
+            it->move(vector, delta_time);
+    }
 }
 
 #endif //ARMA_COMPOSITE_H
