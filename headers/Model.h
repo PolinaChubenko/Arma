@@ -3,17 +3,24 @@
 
 #include "Composite.h"
 
-enum UnitsType{
+enum UnitsType {
     SPEARMAN,
     SWORDSMAN,
     BOWMAN
+};
+
+enum GameStage{
+    ENTRY,
+    WAR,
+    VICTORY,
+    DEFEAT
 };
 
 class Model {
 protected:
     ComposeUnits player;
     ComposeUnits enemy;
-    bool is_war_started = false;
+    GameStage game_stage = ENTRY;
 public:
     Model();
     std::vector<std::shared_ptr<Unit>>& getPlayerUnits();
@@ -23,8 +30,13 @@ public:
     void addUnit(UnitsType, float, float);
     void initEnemy();
 
-    [[nodiscard]] bool get_is_war() const;
-    void set_is_war(bool);
+    bool isEntry();
+    bool isWar();
+    bool isVictory();
+    bool isDefeat();
+    void setWar();
+    void updateGameState();
+
     void attack(float);
 };
 
@@ -50,7 +62,7 @@ size_t Model::enemyUnitsAmount() {
     return enemy.size();
 }
 void Model::addUnit(UnitsType type, float x, float y) {
-    if (x <= 400 && y >= 85 && player.size() < enemy.size()) {
+    if (game_stage == ENTRY && x <= 400 && y >= 85 && player.size() < enemy.size()) {
         switch (type) {
             case SPEARMAN:
                 player.newSpearman(x, y);
@@ -77,14 +89,29 @@ void Model::initEnemy() {
     enemy.newBowman(800, 430);
     enemy.newBowman(800, 530);
 }
-bool Model::get_is_war() const {
-    return is_war_started;
+bool Model::isEntry() {
+    return game_stage == ENTRY;
 }
-void Model::set_is_war(bool is_war) {
-    is_war_started = is_war;
+bool Model::isWar() {
+    return game_stage == WAR;
+}
+bool Model::isVictory() {
+    return game_stage == VICTORY;
+}
+bool Model::isDefeat() {
+    return game_stage == DEFEAT;
+}
+void Model::setWar() {
+    if (game_stage == ENTRY && player.size() == enemy.size())
+        game_stage = WAR;
+}
+void Model::updateGameState() {
+    if (enemyUnitsAmount() == 0) game_stage = VICTORY;
+    else if (playerUnitsAmount() == 0) game_stage = DEFEAT;
 }
 void Model::attack(float delta_time) {
-    if (is_war_started) {
+    if (game_stage != ENTRY) updateGameState();
+    if (game_stage == WAR) {
         player.attack(enemy, delta_time);
         enemy.attack(player, delta_time);
     }

@@ -52,9 +52,7 @@ void Controller::run() {
                 }
 
                 if (event.key.code == sf::Keyboard::Enter) {
-                    if (game->playerUnitsAmount() == game->enemyUnitsAmount()) {
-                        game->set_is_war(true);
-                    }
+                    game->setWar();
                 }
             }
         }

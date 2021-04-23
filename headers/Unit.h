@@ -32,7 +32,7 @@ public:
     virtual void setColor(sf::Color) = 0;
 
     virtual void move(std::pair<float, float>, float) = 0;
-    virtual void hit(std::shared_ptr<Unit>&) = 0;
+    virtual void hit(std::shared_ptr<Unit>&, float) = 0;
     virtual ~Unit() = 0;
 };
 
@@ -41,6 +41,7 @@ class Spearman : public Unit {
 protected:
     std::pair<float, float> position;
     sf::CircleShape texture = sf::CircleShape(size, 5);
+    float duration = 0;
 public:
     Spearman(float, float);
     void getType() const override;
@@ -48,7 +49,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
-    void hit(std::shared_ptr<Unit>&) override;
+    void hit(std::shared_ptr<Unit>&, float) override;
 };
 
 
@@ -56,6 +57,7 @@ class Swordsman : public Unit {
 protected:
     std::pair<float, float> position;
     sf::CircleShape texture = sf::CircleShape(size);
+    float duration = 0;
 public:
     Swordsman(float, float);
     void getType() const override;
@@ -63,7 +65,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
-    void hit(std::shared_ptr<Unit>&) override;
+    void hit(std::shared_ptr<Unit>&, float) override;
 };
 
 
@@ -71,6 +73,7 @@ class Bowman : public Unit {
 protected:
     std::pair<float, float> position;
     sf::CircleShape texture = sf::CircleShape(size, 4);
+    float duration = 0;
 public:
     Bowman(float, float);
     void getType() const override;
@@ -78,7 +81,7 @@ public:
     sf::CircleShape& getTexture() override;
     void setColor(sf::Color) override;
     void move(std::pair<float, float>, float) override;
-    void hit(std::shared_ptr<Unit>&) override;
+    void hit(std::shared_ptr<Unit>&, float) override;
 };
 
 
@@ -145,8 +148,12 @@ void Spearman::move(std::pair<float, float> move_to, float delta_time) {
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
 }
-void Spearman::hit(std::shared_ptr<Unit> &victim) {
-    victim->changeHp() -= getDamage();
+void Spearman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
+    duration += delta_time;
+    if (duration >= attackFrequency) {
+        duration -= attackFrequency;
+        victim->changeHp() -= damage;
+    }
 }
 
 
@@ -174,8 +181,12 @@ void Swordsman::move(std::pair<float, float> move_to, float delta_time) {
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
 }
-void Swordsman::hit(std::shared_ptr<Unit> &victim) {
-    victim->changeHp() -= getDamage();
+void Swordsman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
+    duration += delta_time;
+    if (duration >= attackFrequency) {
+        duration -= attackFrequency;
+        victim->changeHp() -= damage;
+    }
 }
 
 
@@ -204,8 +215,12 @@ void Bowman::move(std::pair<float, float> move_to, float delta_time) {
     position.second += move_to.second * delta_time * speed;
     texture.setPosition(position.first, position.second);
 }
-void Bowman::hit(std::shared_ptr<Unit> &victim) {
-    victim->changeHp() -= getDamage();
+void Bowman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
+    duration += delta_time;
+    if (duration >= attackFrequency) {
+        duration -= attackFrequency;
+        victim->changeHp() -= damage;
+    }
 }
 
 #endif //ARMA_UNIT_H

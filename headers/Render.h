@@ -2,7 +2,6 @@
 #define ARMA_RENDER_H
 
 #include "Assets.h"
-#include <iostream>
 
 class Render : public sf::Drawable, public sf::Transformable {
 private:
@@ -10,6 +9,7 @@ private:
     std::unique_ptr<Model> game;
     sf::Text info;
     sf::Text places;
+    sf::Text game_result;
     sf::Vertex line1[2];
     sf::Vertex line2[2];
 public:
@@ -22,6 +22,7 @@ public:
     void createLines();
     void createPlaces();
     void updatePlaces();
+    void createResult();
 public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
@@ -54,16 +55,22 @@ void Render::render() {
     window.draw(info);
     updatePlaces();
     window.draw(places);
-    if (!game->get_is_war()) {
+    if (game->isEntry()) {
         window.draw(line1, 2, sf::Lines);
     }
     window.draw(line2, 2, sf::Lines);
+    if (game->isVictory() || game->isDefeat()) {
+        createResult();
+        window.draw(game_result);
+    }
     window.display();
 }
 void Render::updatePlaces() {
-    std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
-    p += " places";
-    places.setString(p);
+    if (game->isEntry()) {
+        std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
+        p += " places";
+        places.setString(p);
+    }
 }
 void Render::createInfo() {
     info.setFont(Assets::getInstance().font);
@@ -91,15 +98,26 @@ void Render::createPlaces() {
     places.setPosition(800.f, 5.f);
     updatePlaces();
 }
+void Render::createResult() {
+    game_result.setFont(Assets::getInstance().font);
+    if (game->isVictory())
+        game_result.setString("You won!");
+    else if (game->isDefeat())
+        game_result.setString("You lost...");
+    game_result.setCharacterSize(55);
+    game_result.setFillColor(sf::Color::Red);
+    game_result.setPosition(400.f, 340.f);
+}
 void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for (auto& el : game->getPlayerUnits()) {
-        target.draw((*el).getTexture());
-        target.draw((*el).getHpText());
-    }
-
-    for (auto& el : game->getEnemyUnits()) {
-        target.draw((*el).getTexture());
-        target.draw((*el).getHpText());
+    if (game->isEntry() || game->isWar()) {
+        for (auto& el : game->getPlayerUnits()) {
+            target.draw((*el).getTexture());
+            target.draw((*el).getHpText());
+        }
+        for (auto& el : game->getEnemyUnits()) {
+            target.draw((*el).getTexture());
+            target.draw((*el).getHpText());
+        }
     }
 }
 
