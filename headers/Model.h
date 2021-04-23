@@ -2,19 +2,7 @@
 #define ARMA_MODEL_H
 
 #include "Composite.h"
-
-enum UnitsType {
-    SPEARMAN,
-    SWORDSMAN,
-    BOWMAN
-};
-
-enum GameStage{
-    ENTRY,
-    WAR,
-    VICTORY,
-    DEFEAT
-};
+#include "Enums.h"
 
 class Model {
 protected:
@@ -80,8 +68,8 @@ void Model::addUnit(UnitsType type, float x, float y) {
 }
 void Model::initEnemy() {
     enemy.newSpearman(700, 230);
-    enemy.newSpearman(700, 330);
-    enemy.newSpearman(700, 430);
+    enemy.newSwordsman(700, 330);
+    enemy.newSwordsman(700, 430);
     enemy.newSpearman(700, 530);
 
     enemy.newBowman(800, 230);

@@ -124,7 +124,7 @@ int &Unit::changeHp() {
 }
 
 
-Spearman::Spearman(float x, float y) : Unit(50, 35, 38 + size, 0.9, 15.6) {
+Spearman::Spearman(float x, float y) : Unit(50, 5, 38 + size, 0.9, 15.6) {
     position = {x - size, y - size};
     texture.setPosition(position.first, position.second);
 }
@@ -157,7 +157,7 @@ void Spearman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
 }
 
 
-Swordsman::Swordsman(float x, float y) : Unit(30, 110, 28 + size, 1.0, 8.4) {
+Swordsman::Swordsman(float x, float y) : Unit(30, 20, 28 + size, 1.0, 8.4) {
     position = {x - size, y - size};
     texture.setPosition(position.first, position.second);
 }
@@ -191,7 +191,7 @@ void Swordsman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
 
 
 
-Bowman::Bowman(float x, float y) : Unit(18, 35, 150 + size, 3.5, 12.5) {
+Bowman::Bowman(float x, float y) : Unit(18, 5, 150 + size, 3.5, 12.5) {
     position = {x - size, y - size};
     texture.setPosition(position.first, position.second);
 }

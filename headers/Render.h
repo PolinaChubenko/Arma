@@ -68,14 +68,14 @@ void Render::render() {
 void Render::updatePlaces() {
     if (game->isEntry()) {
         std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
-        p += " places";
+        p += " soldiers left";
         places.setString(p);
     }
 }
 void Render::createInfo() {
     info.setFont(Assets::getInstance().font);
-    info.setString("Press A / S / D to choose the unit; then click on the board\n"
-                   "A-Spearman; S-Swordsman; D-Bowman; press enter to start war!");
+    info.setString("Press A/S/D (Spearman, Swordsman, Bowman) to choose the unit\n"
+                   "Click on the board to place the army. Press ENTER to start the war!");
     info.setCharacterSize(24);
     info.setFillColor(sf::Color::Black);
     info.setPosition(5.f, 5.f);
@@ -100,12 +100,15 @@ void Render::createPlaces() {
 }
 void Render::createResult() {
     game_result.setFont(Assets::getInstance().font);
-    if (game->isVictory())
+    if (game->isVictory()) {
         game_result.setString("You won!");
-    else if (game->isDefeat())
+        game_result.setFillColor(sf::Color::Magenta);
+    }
+    else if (game->isDefeat()) {
         game_result.setString("You lost...");
+        game_result.setFillColor(sf::Color::Red);
+    }
     game_result.setCharacterSize(55);
-    game_result.setFillColor(sf::Color::Red);
     game_result.setPosition(400.f, 340.f);
 }
 void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
