@@ -18,8 +18,8 @@ A strategy game - fight of units - made in C++ using sfml library. It seems to b
 - Use `run.sh` file to run the project and then enjoy the game
 > Note: In case you installed SFML to a non-standard path, you'll need to tell the compiler where to find the SFML headers (.hpp files), so in `run.sh` file set last three commands as it is written below:
 ```sh
-graphics++ -c main.cpp -I<sfml-install-path>/include
-graphics++ main.o -o sfml-app -L<sfml-install-path>/lib -lsfml-graphics -lsfml-window -lsfml-system
+g++ -c main.cpp -I<sfml-install-path>/include
+g++ main.o -o sfml-app -L<sfml-install-path>/lib -lsfml-graphics -lsfml-window -lsfml-system
 export LD_LIBRARY_PATH=<sfml-install-path>/lib && ./sfml-app
 ```
 
