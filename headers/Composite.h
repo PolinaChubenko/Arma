@@ -21,7 +21,7 @@ public:
     void removeUnit(std::shared_ptr<Unit>&);
     size_t size();
     void attack(ComposeUnits&, float);
-    std::shared_ptr<Unit> getTarget(std::shared_ptr<Unit>&, std::vector<std::shared_ptr<Unit>>&);
+    static std::shared_ptr<Unit> getTarget(std::shared_ptr<Unit>&, ComposeUnits&);
 };
 
 
@@ -57,10 +57,10 @@ void ComposeUnits::removeUnit(std::shared_ptr<Unit> &unit) {
 size_t ComposeUnits::size() {
     return units.size();
 }
-std::shared_ptr<Unit> ComposeUnits::getTarget(std::shared_ptr<Unit>& unit, std::vector<std::shared_ptr<Unit>> &enemies) {
+std::shared_ptr<Unit> ComposeUnits::getTarget(std::shared_ptr<Unit>& unit, ComposeUnits &enemies) {
     float min_dis = 1e5;
     std::shared_ptr<Unit> victim = nullptr;
-    for (auto& en : enemies) {
+    for (auto& en : enemies.getUnits()) {
         float new_dis = distance(en->getPosition(), unit->getPosition());
         if (new_dis <= min_dis) {
             min_dis = new_dis;
@@ -71,7 +71,7 @@ std::shared_ptr<Unit> ComposeUnits::getTarget(std::shared_ptr<Unit>& unit, std::
 }
 void ComposeUnits::attack(ComposeUnits &whom_to_attack, float delta_time) {
     for (auto& it : units) {
-        std::shared_ptr<Unit> victim = getTarget(it, whom_to_attack.getUnits());
+        std::shared_ptr<Unit> victim = getTarget(it, whom_to_attack);
         if (victim) {
             std::pair<float, float> vector = victim->getPosition() - it->getPosition();
             float dis = distance(victim->getPosition(), it->getPosition());
