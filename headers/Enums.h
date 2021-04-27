@@ -14,4 +14,13 @@ enum GameStage{
     DEFEAT
 };
 
+enum ColorType {
+    RED,
+    BLUE,
+    BLACK,
+    WHITE,
+    MAGENTA,
+    CYAN
+};
+
 #endif //ARMA_ENUMS_H

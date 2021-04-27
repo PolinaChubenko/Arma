@@ -15,7 +15,7 @@ public:
     std::vector<std::shared_ptr<Unit>>& getEnemyUnits();
     size_t playerUnitsAmount();
     size_t enemyUnitsAmount();
-    void addUnit(UnitsType, float, float);
+    void addUnit(UnitsType, std::pair<float, float>);
     void initEnemy();
 
     bool isEntry();
@@ -34,7 +34,7 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Model::Model() : player(sf::Color::Blue), enemy(sf::Color::Red) {
+Model::Model() : player(Color(BLUE)), enemy(Color(RED)) {
     initEnemy();
 }
 std::vector<std::shared_ptr<Unit>>& Model::getPlayerUnits() {
@@ -49,7 +49,8 @@ size_t Model::playerUnitsAmount() {
 size_t Model::enemyUnitsAmount() {
     return enemy.size();
 }
-void Model::addUnit(UnitsType type, float x, float y) {
+void Model::addUnit(UnitsType type, std::pair<float, float> pos) {
+    float x = pos.first, y = pos.second;
     if (game_stage == ENTRY && x <= 400 && y >= 85 && player.size() < enemy.size()) {
         switch (type) {
             case SPEARMAN:
@@ -90,7 +91,7 @@ bool Model::isDefeat() {
     return game_stage == DEFEAT;
 }
 void Model::setWar() {
-    if (game_stage == ENTRY && player.size() == enemy.size())
+    if (game_stage == ENTRY && player.size() > 0)
         game_stage = WAR;
 }
 void Model::updateGameState() {

@@ -6,8 +6,9 @@
 int main() {
     Assets::getInstance().load();
     Model game;
-    Render render(&game);
-    Controller controller(&render, &game);
+    Graphics graphics;
+    Render render(&game, &graphics);
+    Controller controller(&render, &game, &graphics);
     controller.run();
     return 0;
 }

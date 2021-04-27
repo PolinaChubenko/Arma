@@ -10,10 +10,10 @@ protected:
     std::unique_ptr<SwordsmenFactory> swordsmenFactory = std::make_unique<SwordsmenFactory>();
     std::unique_ptr<BowmenFactory> bowmenFactory = std::make_unique<BowmenFactory>();
     std::vector<std::shared_ptr<Unit>> units;
-    sf::Color color;
+    Color color;
 public:
     ComposeUnits() = default;
-    explicit ComposeUnits(sf::Color);
+    explicit ComposeUnits(Color);
     void newSpearman(float, float);
     void newSwordsman(float, float);
     void newBowman(float, float);
@@ -30,7 +30,8 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-ComposeUnits::ComposeUnits(sf::Color color) : color(color) {}
+ComposeUnits::ComposeUnits(
+        Color color) : color(color) {}
 
 void ComposeUnits::newSpearman(float x, float y) {
     units.emplace_back(spearmenFactory->createUnit(x, y));

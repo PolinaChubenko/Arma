@@ -1,30 +1,17 @@
 #ifndef ARMA_RENDER_H
 #define ARMA_RENDER_H
 
-#include "Assets.h"
+#include "Graphics.h"
 
-class Render : public sf::Drawable, public sf::Transformable {
+class Render {
 private:
-    sf::RenderWindow window;
     std::unique_ptr<Model> game;
-    sf::Text info;
-    sf::Text places;
-    sf::Text game_result;
-    sf::Vertex line1[2];
-    sf::Vertex line2[2];
+    std::unique_ptr<Graphics> graphics;
 public:
-    explicit Render(Model*);
-    ~Render() override = default;
-    sf::RenderWindow& getWindow();
-    bool initialize();
+    explicit Render(Model*, Graphics*);
     void render();
-    void createInfo();
-    void createLines();
-    void createPlaces();
     void updatePlaces();
-    void createResult();
-public:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void updateResult();
 };
 
 
@@ -33,94 +20,57 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Render::Render(Model* game) : game(game) {
-    initialize();
-}
-sf::RenderWindow& Render::getWindow() {
-    return window;
-}
-bool Render::initialize() {
-    window.setPosition(sf::Vector2i(10, 50));
-    window.create(sf::VideoMode(1000, 700), "Arma!");
-    window.setFramerateLimit(60);
-
-    createInfo();
-    createLines();
-    createPlaces();
-    return true;
+Render::Render(Model* game, Graphics* graphics) : game(game), graphics(graphics) {
+    graphics->createWindow(1000, 700, "Arma!", 60);
+    std::string info = "Press A/S/D (Spearman, Swordsman, Bowman) to choose the unit\n"
+                    "Click on the board to place the army. Press ENTER to start the war!";
+    graphics->createText("info", info, 24, Color(BLACK), 5.f, 5.f);
+    graphics->createText("places", 24, Color(BLACK), 800.f, 5.f);
+    graphics->createText("result", 55, Color(WHITE), 400.f, 340.f);
+    graphics->createLine("vertical", {400, 640}, {400, 85}, Color(MAGENTA));
+    graphics->createLine("horizontal", {20, 85}, {980, 85}, Color(MAGENTA));
 }
 void Render::render() {
-    window.clear(sf::Color::White);
-    window.draw(*this);
-    window.draw(info);
+    graphics->clear();
+
+    if (game->isEntry() || game->isWar()) {
+        for (auto& el : game->getPlayerUnits()) {
+            graphics->getWindow().draw((*el).getTexture());
+            graphics->getWindow().draw((*el).getHpText());
+        }
+        for (auto& el : game->getEnemyUnits()) {
+            graphics->getWindow().draw((*el).getTexture());
+            graphics->getWindow().draw((*el).getHpText());
+        }
+    }
     updatePlaces();
-    window.draw(places);
+    graphics->drawText("places");
+    graphics->drawText("info");
     if (game->isEntry()) {
-        window.draw(line1, 2, sf::Lines);
+        graphics->drawLine("vertical");
     }
-    window.draw(line2, 2, sf::Lines);
+    graphics->drawLine("horizontal");
     if (game->isVictory() || game->isDefeat()) {
-        createResult();
-        window.draw(game_result);
+        updateResult();
+        graphics->drawText("result");
     }
-    window.display();
+    graphics->display();
 }
 void Render::updatePlaces() {
     if (game->isEntry()) {
         std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
         p += " soldiers left";
-        places.setString(p);
+        graphics->setText("places", p);
     }
 }
-void Render::createInfo() {
-    info.setFont(Assets::getInstance().font);
-    info.setString("Press A/S/D (Spearman, Swordsman, Bowman) to choose the unit\n"
-                   "Click on the board to place the army. Press ENTER to start the war!");
-    info.setCharacterSize(24);
-    info.setFillColor(sf::Color::Black);
-    info.setPosition(5.f, 5.f);
-}
-void Render::createLines() {
-    line1[0] = sf::Vertex(sf::Vector2f(400, 640));
-    line1[1] = sf::Vertex(sf::Vector2f(400, 85));
-    line2[0] = sf::Vertex(sf::Vector2f(20, 85));
-    line2[1] = sf::Vertex(sf::Vector2f(980, 85));
-
-    line1[0].color = sf::Color::Magenta;
-    line1[1].color = sf::Color::Magenta;
-    line2[0].color = sf::Color::Magenta;
-    line2[1].color = sf::Color::Magenta;
-}
-void Render::createPlaces() {
-    places.setFont(Assets::getInstance().font);
-    places.setCharacterSize(24);
-    places.setFillColor(sf::Color::Black);
-    places.setPosition(800.f, 5.f);
-    updatePlaces();
-}
-void Render::createResult() {
-    game_result.setFont(Assets::getInstance().font);
+void Render::updateResult() {
     if (game->isVictory()) {
-        game_result.setString("You won!");
-        game_result.setFillColor(sf::Color::Magenta);
+        graphics->setText("result", "You won!");
+        graphics->setTextColor("result", Color(MAGENTA));
     }
     else if (game->isDefeat()) {
-        game_result.setString("You lost...");
-        game_result.setFillColor(sf::Color::Red);
-    }
-    game_result.setCharacterSize(55);
-    game_result.setPosition(400.f, 340.f);
-}
-void Render::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    if (game->isEntry() || game->isWar()) {
-        for (auto& el : game->getPlayerUnits()) {
-            target.draw((*el).getTexture());
-            target.draw((*el).getHpText());
-        }
-        for (auto& el : game->getEnemyUnits()) {
-            target.draw((*el).getTexture());
-            target.draw((*el).getHpText());
-        }
+        graphics->setText("result", "You lost...");
+        graphics->setTextColor("result", Color(RED));
     }
 }
 

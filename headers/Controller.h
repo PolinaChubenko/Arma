@@ -8,11 +8,11 @@ class Controller {
 private:
     std::unique_ptr<Render> render;
     std::unique_ptr<Model> game;
+    std::unique_ptr<Graphics> graphics;
     UnitsType type = SPEARMAN;
-    sf::Clock clock;
     float delta_time = 0;
 public:
-    explicit Controller(Render*, Model*);
+    explicit Controller(Render*, Model*, Graphics*);
     ~Controller() = default;
     void run();
     void update_time();
@@ -24,36 +24,25 @@ public:
 /////////////   DEFINITIONS   /////////////
 /******************************************/
 
-Controller::Controller(Render *render, Model *game) : render(render), game(game){}
+Controller::Controller(Render *render, Model *game, Graphics* graphics) : render(render), game(game), graphics(graphics) {}
 void Controller::run() {
-    while (render->getWindow().isOpen()) {
-        sf::Event event{};
+    while (graphics->isWindowOpen()) {
         update_time();
 
-        while (render->getWindow().pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                render->getWindow().close();
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    auto x = static_cast<float>(event.mouseButton.x);
-                    auto y = static_cast<float>(event.mouseButton.y);
-                    game->addUnit(type, x, y);
-                }
-            }
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::A) {
-                    type = SPEARMAN;
-                }
-                if (event.key.code == sf::Keyboard::S) {
-                    type = SWORDSMAN;
-                }
-                if (event.key.code == sf::Keyboard::D) {
-                    type = BOWMAN;
-                }
+        while (graphics->isPollEvent()) {
 
-                if (event.key.code == sf::Keyboard::Enter) {
-                    game->setWar();
-                }
+            if (graphics->isEventClosed())
+                graphics->closeWindow();
+
+            if (graphics->isEventMouseLeftButtonPressed())
+                game->addUnit(type, graphics->getMousePosition());
+
+            if (graphics->isEventKeyPressed()) {
+
+                if (graphics->isKey_A()) type = SPEARMAN;
+                else if (graphics->isKey_S()) type = SWORDSMAN;
+                else if (graphics->isKey_D()) type = BOWMAN;
+                else if (graphics->isKey_Enter()) game->setWar();
             }
         }
         game->attack(delta_time);
@@ -61,9 +50,7 @@ void Controller::run() {
     }
 }
 void Controller::update_time() {
-    delta_time = static_cast<float>(clock.getElapsedTime().asMilliseconds());
-    clock.restart();
-    delta_time /= 800;
+    delta_time = graphics->getDeltaTimeAsMilliseconds() / 800;
 }
 
 #endif //ARMA_CONTROLLER_H

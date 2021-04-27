@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "GameMaths.h"
+#include "Graphics.h"
 
 class Unit {
 protected:
@@ -28,8 +29,8 @@ public:
 
     virtual void getType() const = 0;
     [[nodiscard]] virtual std::pair<float, float> getPosition() const = 0;
-    virtual sf::CircleShape& getTexture() = 0;
-    virtual void setColor(sf::Color) = 0;
+    virtual UnitShape& getTexture() = 0;
+    virtual void setColor(Color) = 0;
 
     virtual void move(std::pair<float, float>, float) = 0;
     virtual void hit(std::shared_ptr<Unit>&, float) = 0;
@@ -40,14 +41,14 @@ public:
 class Spearman : public Unit {
 protected:
     std::pair<float, float> position;
-    sf::CircleShape texture = sf::CircleShape(size, 5);
+    UnitShape texture = UnitShape(size, 5);
     float duration = 0;
 public:
     Spearman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    sf::CircleShape& getTexture() override;
-    void setColor(sf::Color) override;
+    UnitShape& getTexture() override;
+    void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;
 };
@@ -56,14 +57,14 @@ public:
 class Swordsman : public Unit {
 protected:
     std::pair<float, float> position;
-    sf::CircleShape texture = sf::CircleShape(size);
+    UnitShape texture = UnitShape(size);
     float duration = 0;
 public:
     Swordsman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    sf::CircleShape& getTexture() override;
-    void setColor(sf::Color) override;
+    UnitShape& getTexture() override;
+    void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;
 };
@@ -72,14 +73,14 @@ public:
 class Bowman : public Unit {
 protected:
     std::pair<float, float> position;
-    sf::CircleShape texture = sf::CircleShape(size, 4);
+    UnitShape texture = UnitShape(size, 4);
     float duration = 0;
 public:
     Bowman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    sf::CircleShape& getTexture() override;
-    void setColor(sf::Color) override;
+    UnitShape& getTexture() override;
+    void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;
 };
@@ -134,13 +135,13 @@ void Spearman::getType() const {
 std::pair<float, float> Spearman::getPosition() const {
     return position;
 }
-sf::CircleShape &Spearman::getTexture() {
+UnitShape &Spearman::getTexture() {
     return texture;
 }
-void Spearman::setColor(sf::Color color) {
-    texture.setFillColor(color);
+void Spearman::setColor(Color color) {
+    texture.setFillColor(color.getColor());
     texture.setOutlineThickness(1);
-    texture.setOutlineColor(sf::Color(0, 0, 0));
+    texture.setOutlineColor(Color(BLACK).getColor());
 }
 void Spearman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
@@ -167,13 +168,13 @@ void Swordsman::getType() const {
 std::pair<float, float> Swordsman::getPosition() const {
     return position;
 }
-sf::CircleShape &Swordsman::getTexture() {
+UnitShape &Swordsman::getTexture() {
     return texture;
 }
-void Swordsman::setColor(sf::Color color) {
-    texture.setFillColor(color);
+void Swordsman::setColor(Color color) {
+    texture.setFillColor(color.getColor());
     texture.setOutlineThickness(1);
-    texture.setOutlineColor(sf::Color(0, 0, 0));
+    texture.setOutlineColor(Color(BLACK).getColor());
 }
 void Swordsman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
@@ -201,13 +202,13 @@ void Bowman::getType() const {
 std::pair<float, float> Bowman::getPosition() const {
     return position;
 }
-sf::CircleShape &Bowman::getTexture() {
+UnitShape &Bowman::getTexture() {
     return texture;
 }
-void Bowman::setColor(sf::Color color) {
-    texture.setFillColor(color);
+void Bowman::setColor(Color color) {
+    texture.setFillColor(color.getColor());
     texture.setOutlineThickness(1);
-    texture.setOutlineColor(sf::Color(0, 0, 0));
+    texture.setOutlineColor(Color(BLACK).getColor());
 }
 void Bowman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
