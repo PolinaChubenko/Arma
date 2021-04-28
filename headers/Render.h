@@ -3,7 +3,6 @@
 
 #include "Graphics.h"
 #include "Model.h"
-#include "Graphics.h"
 
 class Render {
 private:

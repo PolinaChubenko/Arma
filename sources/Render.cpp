@@ -1,6 +1,5 @@
 #include "Render.h"
 
-
 Render::Render(Model* game, Graphics* graphics) : game(game), graphics(graphics) {
     graphics->createWindow(1000, 700, "Arma!", 60);
     std::string info = "Press A/S/D (Spearman, Swordsman, Bowman) to choose the unit\n"
