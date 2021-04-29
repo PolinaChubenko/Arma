@@ -23,8 +23,7 @@ mkdir build && cd build
 cmake ..
 # Build
 make
-# Installing the generated components 
-# to appropriate places on the filesystem.
+# Installing the generated components to appropriate places on the filesystem.
 sudo make install
 ```
 
