@@ -7,6 +7,8 @@ _DESIGN PATTERNS_ implemented in Arma project:
 - Composite
     - to compose the units into one army and call war methods not for each 
   individual unit
+- Bridge
+    - to split split unit and its texture, army and its color
 
 
 The Model-View-Controller (MVC) data separation scheme is 
