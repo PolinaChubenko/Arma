@@ -17,7 +17,7 @@ size_t Model::enemyUnitsAmount() {
 }
 void Model::addUnit(UnitsType type, std::pair<float, float> pos) {
     float x = pos.first, y = pos.second;
-    if (game_stage == ENTRY && x <= 400 && y >= 85 && player.size() < enemy.size()) {
+    if (game_stage == ENTRY && x <= 400 && y >= 85 && player.size() < enemy.size() - units_delta) {
         switch (type) {
             case SPEARMAN:
                 player.newSpearman(x, y);
@@ -34,15 +34,19 @@ void Model::addUnit(UnitsType type, std::pair<float, float> pos) {
     }
 }
 void Model::initEnemy() {
-    enemy.newSpearman(700, 230);
-    enemy.newSwordsman(700, 330);
-    enemy.newSwordsman(700, 430);
-    enemy.newSpearman(700, 530);
-
-    enemy.newBowman(800, 230);
-    enemy.newBowman(800, 330);
-    enemy.newBowman(800, 430);
-    enemy.newBowman(800, 530);
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> type(1, 3);
+    std::uniform_int_distribution<int> uni_x(450,900);
+    std::uniform_int_distribution<int> uni_y(120, 600);
+    for (int i = 0; i < 8; ++i) {
+        auto t = type(rng);
+        auto x = uni_x(rng);
+        auto y = uni_y(rng);
+        if (t == 1) enemy.newSpearman(x, y);
+        else if (t == 2) enemy.newSwordsman(x, y);
+        else enemy.newBowman(x, y);
+    }
 }
 bool Model::isEntry() {
     return game_stage == ENTRY;

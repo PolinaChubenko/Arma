@@ -34,7 +34,7 @@ void Render::render() {
 }
 void Render::updatePlaces() {
     if (game->isEntry()) {
-        std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount());
+        std::string p = std::to_string(game->enemyUnitsAmount() - game->playerUnitsAmount() - game->units_delta);
         p += " soldiers left";
         graphics->setText("places", p);
     }

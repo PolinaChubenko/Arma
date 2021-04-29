@@ -3,6 +3,7 @@
 
 #include "Composite.h"
 #include "Enums.h"
+#include <random>
 
 class Model {
 protected:
@@ -11,6 +12,8 @@ protected:
     GameStage game_stage = ENTRY;
     void updateGameState();
     void initEnemy();
+public:
+    int units_delta = 2;
 public:
     Model();
     std::vector<std::shared_ptr<Unit>>& getPlayerUnits();
