@@ -3,9 +3,8 @@
 
 #include "Assets.h"
 #include "Color.h"
+#include "UnitTexture.h"
 #include <map>
-
-using UnitShape = sf::CircleShape;
 
 class Graphics {
 private:
@@ -17,7 +16,6 @@ private:
 public:
     bool isWindowOpen();
     void createWindow(int, int, std::string, int);
-    sf::RenderWindow& getWindow();
     void display();
     void clear();
     void closeWindow();
@@ -42,6 +40,7 @@ public:
 
     void drawText(std::string);
     void drawLine(std::string);
+    void drawUnitTexture(UnitTexture&);
 };
 
 #endif //ARMA_GRAPHICS_H

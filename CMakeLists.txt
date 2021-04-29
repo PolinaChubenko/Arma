@@ -57,7 +57,7 @@ set_target_properties(Arma
 # linking targets
 target_link_libraries(Arma sfml-graphics)
 target_link_libraries(Arma Assets Model Render Controller
-        Composite Unit UnitFactory Color Graphics)
+        Composite Unit UnitFactory Color UnitTexture Graphics)
 
 
 # wrapping up our configuration

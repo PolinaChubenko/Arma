@@ -3,13 +3,6 @@
 Unit::Unit(int hp, int damage, float attackDistance, float attackFrequency, float speed) :
         hp(hp), damage(damage), attackDistance(attackDistance), attackFrequency(attackFrequency), speed(speed) {}
 Unit::~Unit() = default;
-void Unit::getAllInfo() const {
-    std::cout << "I have: " << getHp() << "-hp; ";
-    std::cout << getDamage() << "-damage; ";
-    std::cout << getAttackDistance() << "-attack distance; ";
-    std::cout << getAttackFrequency() << "-attack frequency; ";
-    std::cout << getSpeed() << "-speed.\n\n";
-}
 int Unit::getHp() const {
     return hp;
 }
@@ -25,19 +18,15 @@ float Unit::getAttackFrequency() const {
 float Unit::getSpeed() const {
     return speed;
 }
-sf::Text &Unit::getHpText() {
-    hp_text = sf::Text(std::to_string(getHp()), Assets::getInstance().font, 16);
-    hp_text.setPosition(getPosition().first + 12, getPosition().second + 10);
-    return hp_text;
-}
 int &Unit::changeHp() {
     return hp;
 }
 
 
-Spearman::Spearman(float x, float y) : Unit(50, 5, 38 + size, 0.9, 15.6) {
+Spearman::Spearman(float x, float y) : Unit(50, 5, 38 + size, 0.9, 15.6),
+                                       texture(size, 5) {
     position = {x - size, y - size};
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Spearman::getType() const {
     std::cout << "I am Spearman\n";
@@ -45,19 +34,18 @@ void Spearman::getType() const {
 std::pair<float, float> Spearman::getPosition() const {
     return position;
 }
-UnitShape &Spearman::getTexture() {
+UnitTexture &Spearman::getTexture() {
+    texture.setHpText(hp);
     return texture;
 }
 void Spearman::setColor(Color color) {
-    texture.setFillColor(color.getColor());
-    texture.setOutlineThickness(1);
-    texture.setOutlineColor(Color(BLACK).getColor());
+    texture.setColor(color);
 }
 void Spearman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
     position.first += move_to.first * delta_time * speed;
     position.second += move_to.second * delta_time * speed;
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Spearman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
     duration += delta_time;
@@ -68,9 +56,10 @@ void Spearman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
 }
 
 
-Swordsman::Swordsman(float x, float y) : Unit(30, 20, 28 + size, 1.0, 8.4) {
+Swordsman::Swordsman(float x, float y) : Unit(30, 20, 28 + size, 1.0, 8.4),
+                                         texture(size) {
     position = {x - size, y - size};
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Swordsman::getType() const {
     std::cout << "I am Swordsman\n";
@@ -78,19 +67,18 @@ void Swordsman::getType() const {
 std::pair<float, float> Swordsman::getPosition() const {
     return position;
 }
-UnitShape &Swordsman::getTexture() {
+UnitTexture &Swordsman::getTexture() {
+    texture.setHpText(hp);
     return texture;
 }
 void Swordsman::setColor(Color color) {
-    texture.setFillColor(color.getColor());
-    texture.setOutlineThickness(1);
-    texture.setOutlineColor(Color(BLACK).getColor());
+    texture.setColor(color);
 }
 void Swordsman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
     position.first += move_to.first * delta_time * speed;
     position.second += move_to.second * delta_time * speed;
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Swordsman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
     duration += delta_time;
@@ -102,9 +90,10 @@ void Swordsman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
 
 
 
-Bowman::Bowman(float x, float y) : Unit(18, 5, 150 + size, 3.5, 12.5) {
+Bowman::Bowman(float x, float y) : Unit(18, 5, 150 + size, 3.5, 12.5),
+                                   texture(size, 4) {
     position = {x - size, y - size};
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Bowman::getType() const {
     std::cout << "I am Bowman\n";
@@ -112,19 +101,18 @@ void Bowman::getType() const {
 std::pair<float, float> Bowman::getPosition() const {
     return position;
 }
-UnitShape &Bowman::getTexture() {
+UnitTexture &Bowman::getTexture() {
+    texture.setHpText(hp);
     return texture;
 }
 void Bowman::setColor(Color color) {
-    texture.setFillColor(color.getColor());
-    texture.setOutlineThickness(1);
-    texture.setOutlineColor(Color(BLACK).getColor());
+    texture.setColor(color);
 }
 void Bowman::move(std::pair<float, float> move_to, float delta_time) {
     normalise(move_to);
     position.first += move_to.first * delta_time * speed;
     position.second += move_to.second * delta_time * speed;
-    texture.setPosition(position.first, position.second);
+    texture.setPosition(position);
 }
 void Bowman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
     duration += delta_time;

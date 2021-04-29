@@ -14,14 +14,10 @@ void Render::render() {
     graphics->clear();
 
     if (game->isEntry() || game->isWar()) {
-        for (auto& el : game->getPlayerUnits()) {
-            graphics->getWindow().draw((*el).getTexture());
-            graphics->getWindow().draw((*el).getHpText());
-        }
-        for (auto& el : game->getEnemyUnits()) {
-            graphics->getWindow().draw((*el).getTexture());
-            graphics->getWindow().draw((*el).getHpText());
-        }
+        for (auto& el : game->getPlayerUnits())
+            graphics->drawUnitTexture((*el).getTexture());
+        for (auto& el : game->getEnemyUnits())
+            graphics->drawUnitTexture((*el).getTexture());
     }
     updatePlaces();
     graphics->drawText("places");

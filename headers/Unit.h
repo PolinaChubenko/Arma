@@ -6,6 +6,7 @@
 #include <Assets.h>
 #include "GameMaths.h"
 #include "Graphics.h"
+#include "UnitTexture.h"
 
 class Unit {
 protected:
@@ -15,21 +16,18 @@ protected:
     float attackDistance;
     float attackFrequency;
     float speed;
-    sf::Text hp_text;
 public:
     explicit Unit(int, int, float, float, float);
-    void getAllInfo() const;
     [[nodiscard]] int getHp() const;
     [[nodiscard]] int getDamage() const;
     [[nodiscard]] float getAttackDistance() const;
     [[nodiscard]] float getAttackFrequency() const;
     [[nodiscard]] float getSpeed() const;
-    sf::Text& getHpText();
     int& changeHp();
 
     virtual void getType() const = 0;
     [[nodiscard]] virtual std::pair<float, float> getPosition() const = 0;
-    virtual UnitShape& getTexture() = 0;
+    virtual UnitTexture& getTexture() = 0;
     virtual void setColor(Color) = 0;
 
     virtual void move(std::pair<float, float>, float) = 0;
@@ -41,13 +39,13 @@ public:
 class Spearman : public Unit {
 protected:
     std::pair<float, float> position;
-    UnitShape texture = UnitShape(size, 5);
+    UnitTexture texture;
     float duration = 0;
 public:
     Spearman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    UnitShape& getTexture() override;
+    UnitTexture& getTexture() override;
     void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;
@@ -57,13 +55,13 @@ public:
 class Swordsman : public Unit {
 protected:
     std::pair<float, float> position;
-    UnitShape texture = UnitShape(size);
+    UnitTexture texture;
     float duration = 0;
 public:
     Swordsman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    UnitShape& getTexture() override;
+    UnitTexture& getTexture() override;
     void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;
@@ -73,13 +71,13 @@ public:
 class Bowman : public Unit {
 protected:
     std::pair<float, float> position;
-    UnitShape texture = UnitShape(size, 4);
+    UnitTexture texture;
     float duration = 0;
 public:
     Bowman(float, float);
     void getType() const override;
     [[nodiscard]] std::pair<float, float> getPosition() const override;
-    UnitShape& getTexture() override;
+    UnitTexture& getTexture() override;
     void setColor(Color) override;
     void move(std::pair<float, float>, float) override;
     void hit(std::shared_ptr<Unit>&, float) override;

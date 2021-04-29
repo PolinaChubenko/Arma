@@ -7,9 +7,6 @@ void Graphics::createWindow(int width, int height, std::string title, int limit)
     window.create(sf::VideoMode(width, height), title);
     window.setFramerateLimit(limit);
 }
-sf::RenderWindow& Graphics::getWindow() {
-    return window;
-}
 void Graphics::display() {
     window.display();
 }
@@ -89,4 +86,7 @@ void Graphics::drawText(std::string id) {
 void Graphics::drawLine(std::string id) {
     window.draw(lines.at(id), 2, sf::Lines);
 }
-
+void Graphics::drawUnitTexture(UnitTexture& texture) {
+    window.draw(texture.getShape());
+    window.draw((texture.getHpText()));
+}
