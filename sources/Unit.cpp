@@ -56,7 +56,7 @@ void Spearman::hit(std::shared_ptr<Unit> &victim, float delta_time) {
 }
 
 
-Swordsman::Swordsman(float x, float y) : Unit(30, 20, 28 + size, 1.0, 8.4),
+Swordsman::Swordsman(float x, float y) : Unit(30, 10, 28 + size, 1.2, 8.4),
                                          texture(size) {
     position = {x - size, y - size};
     texture.setPosition(position);
