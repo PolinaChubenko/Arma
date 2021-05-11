@@ -8,25 +8,10 @@ public:
     sf::Font font;
 public:
     static Assets& getInstance();
-    void load();
+    void load(std::string);
 private:
     Assets() = default;
     ~Assets() = default;
 };
-
-
-
-/******************************************/
-/////////////   DEFINITIONS   /////////////
-/******************************************/
-
-Assets& Assets::getInstance() {
-    static Assets instance;
-    return instance;
-}
-void Assets::load() {
-    if (!font.loadFromFile("sources/calibri.ttf")) throw;
-}
-
 
 #endif //ARMA_ASSETS_H
